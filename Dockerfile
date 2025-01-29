@@ -34,10 +34,12 @@ RUN apt-get install -y \
         lftp \
         poppler-utils \
         zip \
+        p7zip-full \
         pdftk \
         expect \
         mkisofs \
         dcmtk \
+        wget \
         libmagickwand-dev \
         unixodbc \
         unixodbc-dev
@@ -79,8 +81,16 @@ RUN docker-php-ext-enable redis
 RUN pecl install amqp-beta
 RUN docker-php-ext-enable amqp
 
-RUN pecl install imagick
-RUN docker-php-ext-enable imagick
+ARG IMAGICK_VERSION=3.7.0
+
+RUN curl -L -o /tmp/imagick.tar.gz https://github.com/Imagick/imagick/archive/refs/tags/${IMAGICK_VERSION}.tar.gz \
+    && tar --strip-components=1 -xf /tmp/imagick.tar.gz \
+    && phpize \
+    && ./configure \
+    && make \
+    && make install \
+    && echo "extension=imagick.so" > /usr/local/etc/php/conf.d/ext-imagick.ini \
+    && rm -rf /tmp/*
 
 ADD conf.d/php.ini /usr/local/etc/php/conf.d/90-php.ini
 
