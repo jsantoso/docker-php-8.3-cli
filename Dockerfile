@@ -40,6 +40,7 @@ RUN apt-get install -y \
         dcmtk \
         wget \
         libmagickwand-dev \
+        tesseract-ocr \
         unixodbc \
         unixodbc-dev
 
